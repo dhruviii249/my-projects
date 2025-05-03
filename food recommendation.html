@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>What Should I Eat?</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🍽️ What Should I Eat Today?</h1>
+
+  <form id="foodForm">
+    <label for="mood">Mood (choose 'lazy' or 'happy'):</label>
+    <input type="text" id="mood" placeholder="lazy / happy" required>
+
+    <label>Choose exactly 2 ingredients:</label>
+    <input type="checkbox" name="ingredients" value="rice"> Rice<br>
+    <input type="checkbox" name="ingredients" value="paneer"> Paneer<br>
+    <input type="checkbox" name="ingredients" value="bread"> Bread<br>
+    <input type="checkbox" name="ingredients" value="egg"> Egg<br>
+    <input type="checkbox" name="ingredients" value="cheese"> Cheese<br><br>
+
+    <button type="submit">Suggest Meal</button>
+  </form>
+
+  <h3 id="moodMessage" style="color: #444;"></h3>
+  <h2 id="mealSuggestion" style="color: green;"></h2>
+  <h3 id="errorMessage" style="color: red;"></h3>
+
+  <script>
+    document.getElementById("foodForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const mood = document.getElementById("mood").value.toLowerCase().trim();
+      const selected = Array.from(document.querySelectorAll("input[name='ingredients']:checked")).map(el => el.value);
+
+      const suggestionBox = document.getElementById("mealSuggestion");
+      const errorBox = document.getElementById("errorMessage");
+      const moodBox = document.getElementById("moodMessage");
+
+      suggestionBox.innerText = "";
+      errorBox.innerText = "";
+      moodBox.innerText = "";
+
+      // Mood validation
+      if (mood !== "lazy" && mood !== "happy") {
+        errorBox.innerText = "⚠️ Please enter mood as either 'lazy' or 'happy'.";
+        return;
+      }
+
+      // Ingredient validation
+      if (selected.length !== 2) {
+        errorBox.innerText = "⚠️ Please select exactly 2 ingredients.";
+        return;
+      }
+
+      // Mood message
+      if (mood === "happy") {
+        moodBox.innerText = "😊 Hey! You seem happy. Have a great day ahead! and your meal suggestion is:";
+      } else if (mood === "lazy") {
+        moodBox.innerText = "😴 Hey, your mood seems lazy. Try having a good coffee! and your meal suggestion is:";
+      }
+
+      const combo = selected.sort().join(",");
+
+      const meals = {
+        "bread,paneer": "🥖 Stuffed Paneer Garlic Bread",
+        "bread,rice": "🍽️ Garlic Bread and Steamed Rice",
+        "bread,cheese": "🧄🧀 Cheesy Garlic Bread",
+        "cheese,paneer": "🍜 Make Maggi with lots of paneer and shredded cheese!",
+        "cheese,rice": "🧀 Fried Rice with Cheesy Dip",
+        "egg,paneer": "😬 Oops! Not a good combo, try selecting something else.",
+        "egg,rice": "🥚 Egg Rice",
+        "paneer,rice": "🍛 Paneer Fried Rice"
+      };
+
+      suggestionBox.innerText = meals[combo] || "🤔 Combo not found. Try a different mix!";
+    });
+  </script>
+</body>
+</html>
